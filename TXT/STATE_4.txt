@@ -1,0 +1,52 @@
+#--------------------------------------
+# STATE 4
+#--------------------------------------
+
+#-+- IMPORT -+-
+import RPi.GPIO as GPIO # to control GPIO
+import time # to get the time - ba we c pas complique
+from threading import thread
+import threading # to do multi-tasking actions
+import os # to get file size
+import logging # to create a logger file
+import sys
+import STATE_0
+import STATE_1
+import STATE_2
+import STATE_3
+
+def STATE_4():
+    print "STATE 4 : SAFE STATE\n"
+    # Display LCD : STATE 4
+    # Display  LCD : STATE 4
+    LCD_DISPLAY.main("STATE 4")
+
+    # Update command log
+    COMMAND = "STATE 4"
+
+    # Error log
+
+    while HVGV == 1:
+      HVGV_OFF()
+
+    if HVGV==0:
+        VV_OFF()  # Close VV
+        TMP_OFF() # Switch OFF TMP
+
+        # Return USB : SAFE STATE
+
+
+
+
+        # Error Log
+                           # Receive command
+        while COMMAND<>"": # Check if command received
+            if COMMAND=="STATE 3":
+             STATE_3.STATE_3() #Go to State 3 : Venting Chamber
+            elif COMMAND=="STATE 1":
+             STATE_1.STATE_1() #Go to State 1 : Establish Vacuum
+            elif MODE=="LOCAL":
+             # Send error 5521 to chamber control
+
+            else :
+             # Return USB message :  Invalid command

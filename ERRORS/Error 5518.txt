@@ -1,0 +1,4 @@
+Invalid Command
+Controller received a command that cannot be executed (already in correct state)
+Enter other command
+Information

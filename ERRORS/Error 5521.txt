@@ -1,0 +1,4 @@
+Leaving Remote Automatic
+A request to switch to remote manual has been sent
+
+Critical

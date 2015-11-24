@@ -1,0 +1,19 @@
+#--------------------------------------
+# REMOTE/LOCAL - INPUTS
+#--------------------------------------
+
+#-+- IMPORT -+-
+
+# GPIO.input(channel) # Read the value on the input channel
+
+def GPIOsetup_mode():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(REMOTE_PIN, GPIO.IN)
+    GPIO.setup(LOCAL_PIN, GPIO.IN)
+
+def get_Mode(threadName):
+    while 1 < 2: # To run forever
+    REMOTE = GPIO.input(REMOTE_PIN)
+    LOCAL = GPIO.input(LOCAL_PIN)
+    time.sleep(1) # Get data every 1 sec frequency 1Hz
+    print "%s" % 

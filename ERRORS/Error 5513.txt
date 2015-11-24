@@ -1,0 +1,4 @@
+Local Control
+Commands are sent to the controller remotely but switch set to local control
+Switch from local to remote
+Information

@@ -1,0 +1,4 @@
+Emergency
+Stop loop interrupted
+Press emergency
+Critical

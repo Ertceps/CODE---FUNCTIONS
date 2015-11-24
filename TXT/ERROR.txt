@@ -1,0 +1,112 @@
+#--------------------------------------
+# ERROR - THE MONSTER
+#--------------------------------------
+
+#-+- IMPORT -+-
+import REMOTE_LOCAL
+import MEMORY
+import SENSORS
+import ACTIONS
+
+
+def error():
+	if REMOTE_LOCAL.MODE == "REMOTE":  # Remote or Local ?
+		if PRESSURE_CONTROL_SOFT == 1:
+			if REMOTE == "AUTOMATIC":
+				if CHAMBER_CTRL_PROG == "CONNECTED":
+					if MEMORY.FREE_MEMORY > 4000: #Free memory < 4GB
+						if EMERGENCY == "OFF":
+					        	if FUSE == "ON":
+								if SENSORS_SIGNAL =="ON": # Check if a signal from sensors is received
+									if SIGNAL == 10 or SIGNAL == 0:
+
+										if COMMAND_NEW == 1:
+											if COMMAND_VALID == 1:
+												if REMOTE_LOCAL.MODE == "LOCAL":
+													function_without_name()
+												else:
+													ERROR = "Error 5514"
+												if REMOTE_LOCAL.MODE == "REMOTE":
+													if GUI == 1:
+														if REMOTE == "AUTOMATIC":
+															ERROR = "Error 5515"
+														else: 
+															function_without_name()
+													else:
+														function_without_name()
+												else:
+													ERROR = "Error 5513"	
+											else:
+												ERROR = "Error 5518"
+										else:
+											ERROR = "OK"
+									else:
+										ERROR = "Error 5509"
+								else:
+									ERROR = "Error 5508"
+							else:
+								ERROR = "Error 5512"
+						else:
+							ERROR = "Error 5501"
+					elif MEMORY.FREE_MEMORY < 1 #Free memory < 1MB:
+						ERROR = "Error 5520"
+					else:
+						ERROR = "Error 5519" 
+				else:
+				ERROR = "Error 5517"  
+		else:
+		ERROR = "Error 5516"
+
+
+def function_without_name():
+	if COMMAND == "STATE 1":  # Establish vacuum ?
+		P1_0 = SENSORS.P1
+        	P2_0 = SENSORS.P2
+        	time.sleep(1)
+        	P1_1 = SENSORS.P1
+        	P2_1 = SENSORS.P2
+		if (P1_1 < P1_0) and (P2_1 < P2_0):  # Pressure decreasing ?
+			ERROR = "OK"
+		else:
+			P1_3 = SENSORS.P1
+			P2_3 = SENSORS.P2
+			if P1_3 <= ......................................................
+				if P1_3 < 10^(-5) and P2_3 < 10^(-5):
+					ERROR = "OK"
+				elif SIGNAL_to_TMP == 1:
+					if P1_3 < 10^(-2) and P2_3 < 10^(-2):
+						ERROR = "Error 5510"
+					else:
+						ERROR = "Error 5504"
+				elif P1 > 950 and P2 = 950: # Check if the pressure is over 950hPa = 950mbar - (atm pressure = 1013hPa) - Max range TPG 300 (1000 hPa)
+ 					ERROR = "Error 5505"
+				else:
+ 					ERROR = OK			
+			elif PP_FUSE == "..........":
+				ERROR = "Error 5503"
+			else: 
+				ERROR = "Error 5510"
+	elif COMMAND == "STATE 3":  # Vent the chamber ?
+		P1_0 = SENSORS.P1
+        	P2_0 = SENSORS.P2
+        	time.sleep(1)
+        	P1_1 = SENSORS.P1
+        	P2_1 = SENSORS.P2
+		if (P1_1 > P1_0) and (P2_1 > P2_0):  # Pressure rising ?
+			ERROR = "OK"
+		elif ACTIONS.VV == 1:  # VV open ?
+			ERROR = "Error 5507"
+		else:
+			ERROR = "Error 5506" 		
+	else:
+		ERROR = "Error 5502"
+	   
+      
+
+
+
+
+
+
+with open ("data.txt", "r") as myfile:
+    data=myfile.read().replace('\n', '')

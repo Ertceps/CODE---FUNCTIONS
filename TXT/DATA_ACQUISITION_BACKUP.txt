@@ -1,0 +1,63 @@
+#--------------------------------------
+# DATA ACQUISITION (PHYSICAL/COMMAND) - BACKUP 
+#--------------------------------------
+
+tLock = threading.Lock()
+
+class PhysicalWrite(threading.Thread):
+    def __init__(self, data, out, state):
+	threading.Thread.__init__(self)
+        self.state = state
+        self.data = data
+        self.out = out
+	if self.state == "STATE 0":
+	 tLock.acquire()
+	else
+	 tLock.release
+
+    def run(self):
+        f = open(self.out, "a")
+        f.write(self.data[1] + '\n') # Timestamp 
+        f.write('Pirani P1' + self.data[2] + 'mbar \n') # Pirani P1 (Pressure mbar)
+        f.write('Cold Cathod P2' + self.data[3] + 'mbar \n') # Cold Cathod P2 (Pressure mbar)
+        f.write('Pirani P3' + self.data[4] + 'mbar \n') # Pirani P3 (Pressure mbar)
+        f.write('HVGV status' + self.data[5] + '\n') # HVGV status (OPEN,CLOSED,OPENING,CLOSING)
+        f.write('VV status' + self.data[6] + '\n') # VV status (OPEN,CLOSED)
+        f.write('PP status' + self.data[7] + '\n') # PP status (ON,OFF)
+        f.write('TMP status' + self.data[8] + '\n') # TMP status (ON,OFF)
+        f.close()
+        time.sleep(1)
+        print("Finished Background file write to " + self.out)
+
+	fileinfo = os.stat(self.out)
+	SIZE = fileinfo.st_size # return the file size in bytes
+
+class CommandWrite(threading.Thread):
+    def __init__(self, data, out):
+        threading.Thread.__init__(self)
+	self.state = data[3]
+        self.data = data
+        self.out = out
+	if self.state == "STATE 0":
+	 tLock.acquire()
+	else
+	 tLock.release
+
+    def run(self):
+        f = open(self.out, "a")
+        f.write(self.data[1] + '\n') # Timestamp 
+        f.write('Command requested' + self.data[2] + 'mbar \n') # Pirani P1 (Pressure mbar)
+        f.write('Controller's current state' + self.data[3] + 'mbar \n') # Cold Cathod P2 (Pressure mbar)
+        f.close()
+        time.sleep(1)
+        print("Finished Background file write to " + self.out)
+
+	fileinfo = os.stat(self.out)
+	SIZE = fileinfo.st_size # return the file size in bytes
+
+
+def backup(theadName):
+    while 1 < 2: # To run forever
+    copyfile(src, dst) # copy and paste the file named src to dst
+    time.sleep(1) # Save backup of the data every 1 sec (frequency 1Hz)
+    print "%s" % 

@@ -1,0 +1,60 @@
+#--------------------------------------
+# STATE 2
+#--------------------------------------
+
+#-+- IMPORT -+-
+import RPi.GPIO as GPIO # to control GPIO
+import time # to get the time - ba we c pas complique
+from threading import thread
+import threading # to do multi-tasking actions
+import os # to get file size
+import logging # to create a logger file
+import sys
+import STATE_0
+import STATE_1
+import STATE_3
+import STATE_4
+
+def STATE_2():
+    print "STATE 2 : MAINTAIN VACUUM\n"
+    # Display LCD : STATE 2
+    # Display  LCD : STATE 2
+    LCD_DISPLAY.main("STATE 2")
+
+    while :
+        # Update command log
+        COMMAND = "STATE 2"
+
+        while :# Command received ?
+
+            # Error log
+            if HVGV == 1:
+                get_Sensors()
+                if P3 < 5*10^(-2):
+                    if P2 < 10^(-5):
+
+                    else :
+                        # Display Warning
+                        if P2 < 10^(-2):
+                        else :
+                            # Error Log
+
+
+                            STATE_4.STATE_4()
+                else :
+                 # Error log
+
+                 STATE_4.STATE_4()
+            else :
+             # Error log
+
+             STATE_4()
+     if COMMAND == "STATE 3":
+         STATE_3.STATE_3()
+     else :
+      WAIT_ROUTINE()
+      # Return USB message : Invalid command
+
+
+
+    #

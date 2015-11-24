@@ -1,0 +1,160 @@
+# --------------------------------------
+# CONTROL RELAY - OUTPUTS
+# --------------------------------------
+
+# -+- IMPORT -+-
+import RPi.GPIO as GPIO
+import time
+
+# Relays
+PP_PIN = 5
+TMP_PIN = 6
+TMP_FLOOD_PIN = 66666666666666666666666666
+HVGV_PIN = 13
+VV_PIN = 19
+
+global PP, TMP, TMP_FV, HVGV, VV
+
+
+# Setup the channels (HIGH/1 = OPENED/ON - LOW/0 = CLOSED/OFF)
+
+def gpio_setup_relays():
+    global PP, TMP, TMP_FV, HVGV, VV
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(PP_PIN, GPIO.OUT, initial=GPIO.LOW)
+    PP = 0
+    GPIO.setup(TMP_PIN, GPIO.OUT, initial=GPIO.LOW)
+    TMP = 0
+    GPIO.setup(TMP_FLOOD_PIN, GPIO.OUT, initial=GPIO.LOW)
+    TMP_FV = 0
+    GPIO.setup(HVGV_PIN, GPIO.OUT, initial=GPIO.HIGH)
+    HVGV = 1
+    GPIO.setup(VV_PIN, GPIO.OUT, initial=GPIO.HIGH)
+    VV = 1
+    GPIO.setwarnings(False)
+
+
+# GPIO.input(channel) # Read the value on the input channel
+# GPIO.output(channel, state) #Set the output state of a GPIO pin
+
+# --- PRIMARY PUMP ---
+
+def pp_on():
+    GPIO.output(PP_PIN, 1)
+    global PP
+    PP = 1
+    print "PP on"
+    return ()
+
+
+def pp_off():
+    GPIO.output(PP_PIN, 0)
+    global PP
+    PP = 0
+    print "PP off"
+    return ()
+
+
+# --- TURBO MOLECULAR PUMP ---
+
+def tmp_on():
+    GPIO.output(TMP_PIN, 1)
+    global TMP
+    TMP = 1
+    print "TMP on"
+    return ()
+
+
+def tmp_off():
+    GPIO.output(TMP_PIN, 0)
+    global TMP
+    TMP = 0
+    print "TMP off"
+    return ()
+
+
+def tmp_flood_on():
+    GPIO.output(TMP_FLOOD_PIN, 1)
+    global TMP_FV
+    TMP_FV = 1
+    print "TMP Flood Valve on"
+    return ()
+
+
+def tmp_flood_off():
+    GPIO.output(TMP_FLOOD_PIN, 0)
+    global TMP_FV
+    TMP_FV = 0
+    print "TMP Flood Valve off"
+    return ()
+
+
+# --- HIGH-VACUUM VENTING VALVE ---
+
+def hvgv_on():
+    GPIO.output(HVGV_PIN, 1)
+    global HVGV
+    HVGV = 1
+    print "HVGV open"
+    return ()
+
+
+def hvgv_off():
+    GPIO.output(HVGV_PIN, 0)
+    global HVGV
+    HVGV = 0
+    print "HVGV closed"
+    return ()
+
+
+# --- VENTING VALVE ---
+
+def vv_on():
+    GPIO.output(VV_PIN, 1)
+    global VV
+    VV = 1
+    print "VV open"
+    return ()
+
+
+def vv_off():
+    GPIO.output(VV_PIN, 0)
+    global VV
+    VV = 0
+    print "VV closed"
+    return ()
+
+def Main():
+	for x in range(0, 5):
+		pp_on()
+		time.sleep(1)
+		pp_off()
+		time.sleep(1)
+        x = x + 1
+    	print("on/off")
+	for x in range(0, 5):
+		tmp_on()
+		time.sleep(1)
+		tmp_off()
+		time.sleep(1)
+        x = x + 1
+    	print("on/off")
+	for x in range(0, 5):
+		hvgv_on()
+		time.sleep(1)
+		hvgv_off()
+		time.sleep(1)
+        x = x + 1
+    	print("on/off")
+	for x in range(0, 5):
+		vv_on()
+		time.sleep(1)
+		vv_off()
+		time.sleep(1)
+        x = x + 1
+    	print("on/off")
+    
+    print("Main complete")
+
+if __name__ == '__main__':
+    Main()

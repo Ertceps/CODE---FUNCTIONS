@@ -1,0 +1,4 @@
+Remote Control
+Operator tries to input commands on rack and switch set to remote
+Switch from remote to local
+Information

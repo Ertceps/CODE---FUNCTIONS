@@ -1,0 +1,4 @@
+Safe state (Stop button)
+Regular stop requested from operator
+Resume test by venting or pumping
+Critical

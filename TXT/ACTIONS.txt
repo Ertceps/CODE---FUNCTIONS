@@ -1,0 +1,91 @@
+#--------------------------------------
+# CONTROL RELAY - OUTPUTS
+#--------------------------------------
+
+#-+- IMPORT -+-
+import time
+import os
+import sys
+import RPi.GPIO as GPIO
+
+# Setup the channels
+# HIGH/1 = OPENED/ON
+# LOW/0 = CLOSED/OFF
+def GPIOsetup_relays():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(PP_PIN, GPIO.OUT, initial=GPIO.LOW)
+    GPIO.setup(TMP_PIN, GPIO.OUT, initial=GPIO.LOW)
+    GPIO.setup(HVGV_PIN, GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(VV_PIN, GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setwarnings(False)
+
+# GPIO.input(channel) # Read the value on the input channel
+# GPIO.output(channel, state) #Set the output state of a GPIO pin
+
+#--- PRIMARY PUMP ---
+
+def PP_ON():
+    GPIO.output(PP_PIN, 1)
+    PP = 1
+    print "PP on"
+    return()
+
+def PP_OFF():
+    GPIO.output(PP_PIN, 0)
+    PP = 0
+    print "PP off"
+    return()
+
+#--- TURBO MOLECULAR PUMP ---
+
+def TMP_ON():
+    GPIO.output(TMP_PIN, 1)
+    TMP = 1
+    print "TMP on"
+    return()
+
+def TMP_OFF():
+    GPIO.output(TMP_PIN, 0)
+    TMP = 0
+    print "TMP off"
+    return()
+
+def TMP_FLOOD_ON():
+    GPIO.output(TMP_FLOOD_PIN, 1)
+    TMP_FV = 1
+    print "TMP Flood Valve on"
+    return()
+
+def TMP_FLOOD_OFF():
+    GPIO.output(TMP_FLOOD_PIN, 0)
+    TMP_FV = 0
+    print "TMP Flood Valve off"
+    return()
+
+#--- HIGH-VACUUM VENTING VALVE ---
+
+def HVGV_ON():
+    GPIO.output(HVGV_PIN, 1)
+    HVGV = 1
+    print "HVGV open"
+    return()
+
+def HVGV_OFF():
+    GPIO.output(HVGV_PIN, 0)
+    HVGV = 0
+    print "HVGV closed"
+    return()
+
+#--- VENTING VALVE ---
+
+def VV_ON():
+    GPIO.output(VV_PIN, 1)
+    VV = 1
+    print "VV open"
+    return()
+
+def VV_OFF():
+    GPIO.output(VV_PIN, 0)
+    VV = 0
+    print "VV closed"
+    return()

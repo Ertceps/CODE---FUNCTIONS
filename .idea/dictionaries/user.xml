@@ -1,0 +1,34 @@
+<component name="ProjectDictionaryState">
+  <dictionary name="user">
+    <words>
+      <w>adcnum</w>
+      <w>adcout</w>
+      <w>asctime</w>
+      <w>bakdir</w>
+      <w>bakfolder</w>
+      <w>cathod</w>
+      <w>clockpin</w>
+      <w>commandout</w>
+      <w>cspin</w>
+      <w>dest</w>
+      <w>dstdir</w>
+      <w>fulldir</w>
+      <w>gpio</w>
+      <w>hvgv</w>
+      <w>labview</w>
+      <w>levelname</w>
+      <w>maxversions</w>
+      <w>misopin</w>
+      <w>mosipin</w>
+      <w>pirani</w>
+      <w>programable</w>
+      <w>readadc</w>
+      <w>recursing</w>
+      <w>ruag</w>
+      <w>spiclk</w>
+      <w>spimiso</w>
+      <w>spimosi</w>
+      <w>srcdir</w>
+    </words>
+  </dictionary>
+</component>

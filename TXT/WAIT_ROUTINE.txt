@@ -1,0 +1,10 @@
+
+
+#-+- IMPORT -+-
+
+
+# define wait_routine
+def WAIT_ROUTINE():
+    # Received command
+    
+    COMMAND = get_Command()

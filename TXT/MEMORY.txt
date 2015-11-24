@@ -1,0 +1,36 @@
+#--------------------------------------
+# MEMORY
+#--------------------------------------
+
+#-+- IMPORT -+-
+
+
+def details(threadName, dev):
+
+    fulldir = "/media/ravi/"+dev
+
+    disk = os.statvfs(fulldir)
+
+    print("")
+    print"Driver name " + Name[x]
+    print("")
+
+    totalBytes = float(disk.f_bsize*disk.f_blocks)
+    print "total space: %.2f GB" % (totalBytes/1024/1024/1024)
+
+    totalUsedSpace = float(disk.f_bsize*(disk.f_blocks-disk.f_bfree))
+    print "used space: %.2f GB" % (totalUsedSpace/1024/1024/1024)
+
+    totalAvailSpace = float(disk.f_bsize*disk.f_bfree)
+    print "available space: %.2f GB" % (totalAvailSpace/1024/1024/1024)
+
+    print("------------------------------")
+
+    time.sleep(5)
+
+Name = os.listdir("/media/ravi/")
+length = len(Name)
+print(Name[-1])
+
+for x in range(length):
+    details(str(Name[x]))

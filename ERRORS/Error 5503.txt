@@ -1,0 +1,4 @@
+PP Failure
+Pressure stable at atmospherique or failure feedback from fuse
+Check power and TRIAC/Relays
+Critical

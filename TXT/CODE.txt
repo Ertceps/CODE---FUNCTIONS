@@ -1,0 +1,1042 @@
+#!/usr/bin/python
+#--------------------------------------
+#    ___  __   __ _______ _______
+#   / _ \/ /  / //  _   /  ____ /
+#  / , _/ /__/ // ___  /  /_/ /
+# /_/|_/_____ //_/  /_/\_____/
+#       		  ___ ___ ___ ___ ___
+#                /__ /__//_ //   /_
+#               ___//   /  //__ /__
+
+# VTA PRESSURE CONTROLLER
+# Author : Sam
+# Date   : 2015
+#
+#--------------------------------------
+
+# The wiring for the LCD is as follows:
+# 1 : GND
+# 2 : 5V
+# 3 : Contrast (0-5V)*
+# 4 : RS (Register Select)
+# 5 : R/W (Read Write)       - GROUND THIS PIN
+# 6 : Enable or Strobe
+# 7 : Data Bit 0             - NOT USED - CAN BE USED FOR 8 BITS
+# 8 : Data Bit 1             - NOT USED - CAN BE USED FOR 8 BITS
+# 9 : Data Bit 2             - NOT USED - CAN BE USED FOR 8 BITS
+# 10: Data Bit 3             - NOT USED - CAN BE USED FOR 8 BITS
+# 11: Data Bit 4
+# 12: Data Bit 5
+# 13: Data Bit 6
+# 14: Data Bit 7
+# 15: LCD Backlight +5V**
+# 16: LCD Backlight GND
+
+#import
+import RPi.GPIO as GPIO # to control GPIO
+import time # to get the time - ba we c pas complique
+from threading import thread
+import threading # to do multi-tasking actions
+import os # to get file size
+import logging # to create a logger file
+import sys
+
+
+#--------------------------------------
+# GPIO DEFINITION
+#--------------------------------------
+# LCD mapping
+LCD_RS = 18
+LCD_E  = 23
+LCD_D4 = 12
+LCD_D5 = 16
+LCD_D6 = 20
+LCD_D7 = 21
+
+# Relays
+PP_PIN = 5
+TMP_PIN = 6
+HVGV_PIN = 13
+VV_PIN = 19
+
+# Sensors
+PIRANI_P1_PIN = 17
+COLD_CATHOD_P2_PIN = 27
+PIRANI_P3_PIN = 22
+
+# Remote/Local
+REMOTE_PIN = 4
+LOCAL_PIN = 24
+
+#--------------------------------------
+# GLOBAL VARIABLES
+#--------------------------------------
+
+str_pad = " " * 16
+
+#--------------------------------------
+# STATES
+#--------------------------------------
+
+# define wait_routine
+def WAIT_ROUTINE():
+    # Received command
+    
+    COMMAND = get_Command()
+
+
+
+
+
+
+# define the STATES blocks
+
+def STATE_0():
+    print "STATE 0 : VENTED CHAMBER\n"
+    # Display  LCD : STATE 0
+    lcd_stringfix("STATE 0",LCD_LINE_1)
+    time.sleep(2)
+    lcd_stringfix("VENTED CHAMBER",LCD_LINE_1)
+    my_long_string = "P1 : " P1 "P2 : " P2 "P3 : " P3
+    my_long_string = str_pad + my_long_string
+    for i in range (0, len(my_long_string)):
+     lcd_byte(LCD_LINE_2, LCD_CMD)
+     lcd_text = my_long_string[i:(i+15)]
+     lcd_stringscroll(lcd_text,1)
+     time.sleep(0.4)
+    lcd_byte(LCD_LINE_2, LCD_CMD)
+    lcd_stringscroll(str_pad,1)
+        
+    # Update command log
+    COMMAND = "STATE 0"
+
+    # Stop Data acquisition
+
+    while COMMAND == "STATE 0":
+        while : # Receive command
+            get_Mode() # !!!!!!!! Create this function
+            if COMMAND == "STATE 1":
+                STATE_1()
+            elif MODE == "LOCAL":
+                # Send error 5521 to chamber control
+
+                # Exit Remote sequence
+
+            else :
+
+            #Return USB message : Invalid command
+
+            # Error log
+
+
+def STATE_1():
+    print "STATE 1 : ESTABLISH VACUUM\n"
+    # Display LCD : STATE 1
+    lcd_stringfix("STATE 1",LCD_LINE_1)
+    time.sleep(2)
+    lcd_stringfix("ESTABLISH VACUUM",LCD_LINE_1)
+    my_long_string = "P1 : " P1 "P2 : " P2 "P3 : " P3
+    my_long_string = str_pad + my_long_string
+    for i in range (0, len(my_long_string)):
+     lcd_byte(LCD_LINE_2, LCD_CMD)
+     lcd_text = my_long_string[i:(i+15)]
+     lcd_stringscroll(lcd_text,1)
+     time.sleep(0.4)
+    lcd_byte(LCD_LINE_2, LCD_CMD)
+    lcd_stringscroll(str_pad,1)
+
+    # Safety Check
+
+    # Update command log
+    COMMAND = "STATE 1"
+
+    # Start Data acquisition
+
+    PP_ON()
+    start_time = time.time()
+    get_Sensors()
+
+    while P3 < P1:
+        # Error log
+
+        WAIT_ROUTINE()
+        elapsed_time = time.time() - start_time
+        if elapsed_time > (3600*5): # Check if PP switch ON for more than 5 hours
+            # Error log
+
+            STATE_4()
+
+    HVGV_ON()
+    start_time = time.time()
+
+    while P1 > 10^(-1):
+        # Error log
+
+        WAIT_ROUTINE()
+        elapsed_time = time.time() - start_time
+        if elapsed_time > (3600*5): # Check if PP switch ON for more than 5 hours
+            # Error log
+
+            STATE_4()
+
+    TMP_ON()
+    start_time = time.time()
+
+    while P2 > 10^(-4):
+        # Error log
+
+        WAIT_ROUTINE()
+        elapsed_time = time.time() - start_time
+        if elapsed_time > (3600*60): # Check if PP switch ON for more than 60 hours
+            # Error log
+
+            STATE_4()
+
+    while P2 > 10^(-5):
+        WAIT_ROUTINE()
+
+    STATE_2() # Go to STATE 2 : Maintain Vacuum
+
+
+
+def STATE_2():
+    print "STATE 2 : MAINTAIN VACUUM\n"
+    # Display LCD : STATE 2
+    lcd_stringfix("STATE 2",LCD_LINE_1)
+    time.sleep(2)
+    lcd_stringfix("MAINTAIN VACUUM",LCD_LINE_1)
+    my_long_string = "P1 : " P1 "P2 : " P2 "P3 : " P3
+    my_long_string = str_pad + my_long_string
+    for i in range (0, len(my_long_string)):
+     lcd_byte(LCD_LINE_2, LCD_CMD)
+     lcd_text = my_long_string[i:(i+15)]
+     lcd_stringscroll(lcd_text,1)
+     time.sleep(0.4)
+    lcd_byte(LCD_LINE_2, LCD_CMD)
+    lcd_stringscroll(str_pad,1)
+
+    while :
+        # Update command log
+        COMMAND = "STATE 2"
+
+        while :# Command received ?
+
+            # Error log
+            if HVGV == 1:
+                get_Sensors()
+                if P3 < 5*10^(-2):
+                    if P2 < 10^(-5):
+
+                    else :
+                        # Display Warning
+                        if P2 < 10^(-2):
+                        else :
+                            # Error Log
+
+
+                            STATE_4()
+                else :
+                 # Error log
+
+                 STATE_4()
+            else :
+             # Error log
+
+             STATE_4()
+     if COMMAND == "STATE 3":
+         STATE_3()
+     else :
+      WAIT_ROUTINE()
+      # Return USB message : Invalid command
+
+
+
+    #
+
+def STATE_3():
+    print "STATE 3 : VENTING CHAMBER\n"
+    # Display LCD : STATE 3
+    lcd_stringfix("STATE 3",LCD_LINE_1)
+    time.sleep(2)
+    lcd_stringfix("VENTING CHAMBER",LCD_LINE_1)
+    my_long_string = "P1 : " P1 "P2 : " P2 "P3 : " P3
+    my_long_string = str_pad + my_long_string
+    for i in range (0, len(my_long_string)):
+     lcd_byte(LCD_LINE_2, LCD_CMD)
+     lcd_text = my_long_string[i:(i+15)]
+     lcd_stringscroll(lcd_text,1)
+     time.sleep(0.4)
+    lcd_byte(LCD_LINE_2, LCD_CMD)
+    lcd_stringscroll(str_pad,1)
+
+    # Safety Check
+
+
+    # Update command log
+    COMMAND = "STATE 3"
+
+    HVGV_OFF() # Close HVGV
+    TMP_OFF() # Switch OFF TMP
+
+                      # Receive command
+    if COMMAND<>"STATE 3":
+        # Issue error 5502
+        STATE_4() #Go to State 4 : Safe State
+    elif MODE=="LOCAL":
+        # Send error 5521 to chamber control
+        LOCAL() #Exit automatic sequence
+    else :
+        # Open TMP flood valve
+        PP_OFF() # Switch OFF PP
+        VV_ON() # Open Venting Valve
+        start_time = time.time()
+        time.sleep(10) # Wait 10 sec
+
+        # Error log
+
+        counter = 1
+        P1_0 = P1
+        P2_0 = P2
+        time.sleep(0.5)
+        P1_1 = P1
+        P2_1 = P2
+        elapsed_time = time.time() - start_time
+        if ((P1_0<P1_1) and (P2_0<P2_1)):
+            while elapsed_time < 100: #!!!!! Value TBD:
+             time.sleep(30) # Wait 30 sec
+             # Error log
+             WAIT_ROUTINE()
+             elapsed_time = time.time() - start_time # Time since VV open
+            if elapsed_time > 100: # !!!!! Value TBD
+                VV_OFF()
+                TMP_FLOOD_OFF()
+                STATE_0() # Go to STATE 0 : Vented Chamber
+
+
+
+
+
+def STATE_4():
+    print "STATE 4 : SAFE STATE\n"
+    # Display LCD : STATE 4
+    lcd_stringfix("STATE 4",LCD_LINE_1)
+    time.sleep(2)
+    lcd_stringfix("SAFE STATE",LCD_LINE_1)
+    my_long_string = "P1 : " P1 "P2 : " P2 "P3 : " P3
+    my_long_string = str_pad + my_long_string
+    for i in range (0, len(my_long_string)):
+     lcd_byte(LCD_LINE_2, LCD_CMD)
+     lcd_text = my_long_string[i:(i+15)]
+     lcd_stringscroll(lcd_text,1)
+     time.sleep(0.4)
+    lcd_byte(LCD_LINE_2, LCD_CMD)
+    lcd_stringscroll(str_pad,1)
+
+    # Update command log
+    COMMAND = "STATE 4"
+
+    # Error log
+
+    while HVGV == 1:
+      HVGV_OFF()
+
+    if HVGV==0:
+        VV_OFF()  # Close VV
+        TMP_OFF() # Switch OFF TMP
+
+        # Return USB : SAFE STATE
+
+
+
+
+        # Error Log
+                           # Receive command
+        while COMMAND<>"": # Check if command received
+            if COMMAND=="STATE 3":
+             STATE_3() #Go to State 3 : Venting Chamber
+            elif COMMAND=="STATE 1":
+             STATE_1() #Go to State 1 : Establish Vacuum
+            elif MODE=="LOCAL":
+             # Send error 5521 to chamber control
+
+            else :
+             # Return USB message :  Invalid command
+
+
+
+
+
+
+
+
+# map the inputs to the function blocks - switch/case equivalent
+STATES = { 0 : STATE_0,
+           1 : STATE_1,
+           2 : STATE_2,
+           3 : STATE_3,
+           4 : STATE_4,
+         }
+
+STATES[num]()
+
+
+
+#--------------------------------------
+# LCD DISPLAY
+#--------------------------------------
+
+# Define some device constants
+LCD_WIDTH = 16    # Maximum characters per line
+LCD_CHR = True
+LCD_CMD = False
+
+LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
+LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
+
+# Timing constants
+E_PULSE = 0.00005
+E_DELAY = 0.00005
+
+def main():
+  # Main program block
+  GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
+  GPIO.setup(LCD_E, GPIO.OUT)  # E
+  GPIO.setup(LCD_RS, GPIO.OUT) # RS
+  GPIO.setup(LCD_D4, GPIO.OUT) # DB4
+  GPIO.setup(LCD_D5, GPIO.OUT) # DB5
+  GPIO.setup(LCD_D6, GPIO.OUT) # DB6
+  GPIO.setup(LCD_D7, GPIO.OUT) # DB7
+
+  # Initialise display
+  lcd_init()
+
+  while True:
+    str_pad = " " * 16
+
+    # STATE 0
+    lcd_stringfix("STATE 0",LCD_LINE_1)
+    time.sleep(2)
+    lcd_stringfix("VENTED CHAMBER",LCD_LINE_1)
+
+    my_long_string = "P1 : " P1 "P2 : " P2 "P3 : " P3
+    my_long_string = str_pad + my_long_string
+    for i in range (0, len(my_long_string)):
+     lcd_byte(LCD_LINE_2, LCD_CMD)
+     lcd_text = my_long_string[i:(i+15)]
+     lcd_stringscroll(lcd_text,1)
+     time.sleep(0.4)
+    lcd_byte(LCD_LINE_2, LCD_CMD)
+    lcd_stringscroll(str_pad,1)
+
+    time.sleep(3) # 3 second delay
+
+    # STATE 1
+    lcd_stringfix("STATE 1",LCD_LINE_1)
+    time.sleep(2)
+    lcd_stringfix("ESTABLISH VACUUM",LCD_LINE_1)
+    my_long_string = "P1 : " P1 "P2 : " P2 "P3 : " P3
+    my_long_string = str_pad + my_long_string
+    for i in range (0, len(my_long_string)):
+     lcd_byte(LCD_LINE_2, LCD_CMD)
+     lcd_text = my_long_string[i:(i+15)]
+     lcd_stringscroll(lcd_text,1)
+     time.sleep(0.4)
+    lcd_byte(LCD_LINE_2, LCD_CMD)
+    lcd_stringscroll(str_pad,1)
+
+    time.sleep(3) # 3 second delay
+
+    # STATE 2
+    lcd_stringfix("STATE 2",LCD_LINE_1)
+    time.sleep(2)
+    lcd_stringfix("MAINTAIN VACUUM",LCD_LINE_1)
+    my_long_string = "P1 : " P1 "P2 : " P2 "P3 : " P3
+    my_long_string = str_pad + my_long_string
+    for i in range (0, len(my_long_string)):
+     lcd_byte(LCD_LINE_2, LCD_CMD)
+     lcd_text = my_long_string[i:(i+15)]
+     lcd_stringscroll(lcd_text,1)
+     time.sleep(0.4)
+    lcd_byte(LCD_LINE_2, LCD_CMD)
+    lcd_stringscroll(str_pad,1)
+
+    time.sleep(3)
+
+    # STATE 3
+    lcd_stringfix("STATE 3",LCD_LINE_1)
+    time.sleep(2)
+    lcd_stringfix("VENTING CHAMBER",LCD_LINE_1)
+    my_long_string = "P1 : " P1 "P2 : " P2 "P3 : " P3
+    my_long_string = str_pad + my_long_string
+    for i in range (0, len(my_long_string)):
+     lcd_byte(LCD_LINE_2, LCD_CMD)
+     lcd_text = my_long_string[i:(i+15)]
+     lcd_stringscroll(lcd_text,1)
+     time.sleep(0.4)
+    lcd_byte(LCD_LINE_2, LCD_CMD)
+    lcd_stringscroll(str_pad,1)
+
+    time.sleep(3)
+
+    # STATE 4
+    lcd_stringfix("STATE 4",LCD_LINE_1)
+    time.sleep(2)
+    lcd_stringfix("SAFE STATE",LCD_LINE_1)
+    my_long_string = "P1 : " P1 "P2 : " P2 "P3 : " P3
+    my_long_string = str_pad + my_long_string
+    for i in range (0, len(my_long_string)):
+     lcd_byte(LCD_LINE_2, LCD_CMD)
+     lcd_text = my_long_string[i:(i+15)]
+     lcd_stringscroll(lcd_text,1)
+     time.sleep(0.4)
+    lcd_byte(LCD_LINE_2, LCD_CMD)
+    lcd_stringscroll(str_pad,1)
+
+
+def lcd_init():
+  # Initialise display
+  lcd_byte(0x33,LCD_CMD)
+  lcd_byte(0x32,LCD_CMD)
+  lcd_byte(0x28,LCD_CMD)
+  lcd_byte(0x0C,LCD_CMD)
+  lcd_byte(0x06,LCD_CMD)
+  lcd_byte(0x01,LCD_CMD)
+  time.sleep(E_DELAY)
+
+def lcd_stringfix(message,line):
+  # Send string to display
+
+  message = message.ljust(LCD_WIDTH," ")
+
+  lcd_byte(line, LCD_CMD)
+
+  for i in range(LCD_WIDTH):
+    lcd_byte(ord(message[i]),LCD_CHR)
+
+def lcd_stringscroll(message,style):
+  # Send string to display
+  # style=1 Left justified
+  # style=2 Centred
+  # style=3 Right justified
+
+  if style==1:
+    message = message.ljust(LCD_WIDTH," ")
+  elif style==2:
+    message = message.center(LCD_WIDTH," ")
+  elif style==3:
+    message = message.rjust(LCD_WIDTH," ")
+
+  for i in range(LCD_WIDTH):
+    lcd_byte(ord(message[i]),LCD_CHR)
+
+def lcd_byte(bits, mode):
+  # Send byte to data pins
+  # bits = data
+  # mode = True  for character
+  #        False for command
+
+  GPIO.output(LCD_RS, mode) # RS
+
+  # High bits
+  GPIO.output(LCD_D4, False)
+  GPIO.output(LCD_D5, False)
+  GPIO.output(LCD_D6, False)
+  GPIO.output(LCD_D7, False)
+  if bits&0x10==0x10:
+    GPIO.output(LCD_D4, True)
+  if bits&0x20==0x20:
+    GPIO.output(LCD_D5, True)
+  if bits&0x40==0x40:
+    GPIO.output(LCD_D6, True)
+  if bits&0x80==0x80:
+    GPIO.output(LCD_D7, True)
+
+  # Toggle 'Enable' pin
+  lcd_toggle_enable()
+
+  # Low bits
+  GPIO.output(LCD_D4, False)
+  GPIO.output(LCD_D5, False)
+  GPIO.output(LCD_D6, False)
+  GPIO.output(LCD_D7, False)
+  if bits&0x01==0x01:
+    GPIO.output(LCD_D4, True)
+  if bits&0x02==0x02:
+    GPIO.output(LCD_D5, True)
+  if bits&0x04==0x04:
+    GPIO.output(LCD_D6, True)
+  if bits&0x08==0x08:
+    GPIO.output(LCD_D7, True)
+
+  # Toggle 'Enable' pin
+  lcd_toggle_enable()
+
+def lcd_toggle_enable():
+  # Toggle enable
+  time.sleep(E_DELAY)
+  GPIO.output(LCD_E, True)
+  time.sleep(E_PULSE)
+  GPIO.output(LCD_E, False)
+  time.sleep(E_DELAY)
+
+if __name__ == '__main__':
+  main()
+
+  try:
+    main()
+  except KeyboardInterrupt:
+    pass
+  finally:
+    lcd_byte(0x01, LCD_CMD)
+    lcd_string("Goodbye!",LCD_LINE_1)
+    GPIO.cleanup()
+
+
+
+#--------------------------------------
+# CONTROL RELAY - OUTPUTS
+#--------------------------------------
+
+#!/usr/bin/python3
+#import time
+#import os
+#import sys
+#import RPi.GPIO as GPIO
+
+# Setup the channels
+# HIGH/1 = OPENED/ON
+# LOW/0 = CLOSED/OFF
+def GPIOsetup_relays():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(PP_PIN, GPIO.OUT, initial=GPIO.LOW)
+    GPIO.setup(TMP_PIN, GPIO.OUT, initial=GPIO.LOW)
+    GPIO.setup(HVGV_PIN, GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(VV_PIN, GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setwarnings(False)
+
+# GPIO.input(channel) # Read the value on the input channel
+# GPIO.output(channel, state) #Set the output state of a GPIO pin
+
+def PP_ON():
+    GPIO.output(PP_PIN, 1)
+    PP = 1
+    print "PP on"
+    return()
+
+def PP_OFF():
+    GPIO.output(PP_PIN, 0)
+    PP = 0
+    print "PP off"
+    return()
+
+def TMP_ON():
+    GPIO.output(TMP_PIN, 1)
+    TMP = 1
+    print "TMP on"
+    return()
+
+def TMP_OFF():
+    GPIO.output(TMP_PIN, 0)
+    TMP = 0
+    print "TMP off"
+    return()
+
+def TMP_FLOOD_ON():
+    GPIO.output(TMP_FLOOD_PIN, 1)
+    TMP_FV = 1
+    print "TMP Flood Valve on"
+    return()
+
+def TMP_FLOOD_OFF():
+    GPIO.output(TMP_FLOOD_PIN, 0)
+    TMP_FV = 0
+    print "TMP Flood Valve off"
+    return()
+
+def HVGV_ON():
+    GPIO.output(HVGV_PIN, 1)
+    HVGV = 1
+    print "HVGV open"
+    return()
+
+def HVGV_OFF():
+    GPIO.output(HVGV_PIN, 0)
+    HVGV = 0
+    print "HVGV closed"
+    return()
+
+def VV_ON():
+    GPIO.output(VV_PIN, 1)
+    VV = 1
+    print "VV open"
+    return()
+
+def VV_OFF():
+    GPIO.output(VV_PIN, 0)
+    VV = 0
+    print "VV closed"
+    return()
+
+#def getTEMP():
+#    CPU_temp = float(getCPUtemperature())
+#    if CPU_temp>FAN_START:
+#        fanON()
+#    else:
+#        fanOFF()
+#    return()
+
+#def main():
+#    GPIOsetup()
+#    getTEMP()
+
+#try:
+#    main()
+#finally:
+#    print ("Finish")
+#    #GPIO.cleanup()
+
+
+
+#--------------------------------------
+# SENSORS - INPUTS
+#--------------------------------------
+# GPIO.input(channel) # Read the value on the input channel
+
+# Setup the channels
+def GPIOsetup_sensors():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(PIRANI_P1_PIN, GPIO.IN)
+    GPIO.setup(COLD_CATHOD_P2_PIN, GPIO.IN)
+    GPIO.setup(PIRANI_P3_PIN, GPIO.IN)
+    GPIO.setwarnings(False)
+
+def get_Sensors(threadName):
+    while 1 < 2: # To run forever
+    P1 = GPIO.input(PIRANI_P1_PIN)
+    P2 = GPIO.input(COLD_CATHOD_P2_PIN)
+    P3 = GPIO.input(PIRANI_P3_PIN)
+    time.sleep(1) # Get data every 1 sec frequency 1Hz
+    print "%s" % 
+
+#--------------------------------------
+# REMOTE/LOCAL - INPUTS
+#--------------------------------------
+# GPIO.input(channel) # Read the value on the input channel
+
+def GPIOsetup_mode():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(REMOTE_PIN, GPIO.IN)
+    GPIO.setup(LOCAL_PIN, GPIO.IN)
+
+def get_Mode(threadName):
+    while 1 < 2: # To run forever
+    REMOTE = GPIO.input(REMOTE_PIN)
+    LOCAL = GPIO.input(LOCAL_PIN)
+    time.sleep(1) # Get data every 1 sec frequency 1Hz
+    print "%s" % 
+
+
+#--------------------------------------
+# ERROR LOG FILE
+#--------------------------------------
+# create logger
+logger = logging.getLogger('error')
+logger.setLevel(logging.DEBUG)
+
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s') # Timestamp / Error Code / Error iNformation / Importance
+
+# add formatter to ch
+ch.setFormatter(formatter)
+
+# add ch to logger
+logger.addHandler(ch)
+
+# 'application' code
+logger.debug('debug message')
+logger.info('info message')
+logger.warn('warn message')
+logger.error('error message')
+logger.critical('critical message')
+
+
+#--------------------------------------
+# ERROR - THE MONSTER
+#--------------------------------------
+def error():
+if MODE == "REMOTE":
+ if PRESSURE_CONTROL_SOFT == "CONNECTED":
+  if REMOTE == "AUTOMATIC":
+   if CHAMBER_CTRL_PROG == "CONNECTED":
+    if FREE_MEMORY > 4000: #Free memory < 4GB
+     if EMERGENCY == "INTERRUPTED":
+      ERROR = Error 5501
+     elif FUSE == "ON":
+      if SENSORS_SIGNAL =="": # Check if a signal from sensors is received
+       .................... #
+	if COMMAND == "": # Check if command is received
+	 if COMMAND == "": # Check if command is valid...
+	  if MODE == "LOCAL":
+	   
+	  elif MODE == "REMOTE": 
+	   
+    else:
+     if MEMORY < 1 #Free memory < 1MB
+      ERROR = Error 5520
+     else:
+      ERROR = Error 5519       
+   else:
+    ERROR = Error 5517  
+ elif 
+
+ if COMMAND == "STATE 1":
+
+ elif COMMAND == "STATE 3":
+  
+ else :
+  ERROR = Error 5502
+  
+
+ if P1 < 10^(-2) and P2 < 10^(-2):
+  ERROR = Error 5510
+ else
+  ERROR = Error 5504
+
+ if P1 > 950 and P2 = 950: # Check if the pressure is over 950hPa = 950mbar - (atm pressure = 1013hPa) - Max range TPG 300 (1000 hPa)
+  ERROR = Error 5505
+ else
+  OK
+
+ if VV == 1:
+  ERROR = Error 5507
+ else
+  ERROR = Error 5506
+
+
+#--------------------------------------
+# DATA ACQUISITION (PHYSICAL/COMMAND) - BACKUP 
+#--------------------------------------
+
+tLock = threading.Lock()
+
+class PhysicalWrite(threading.Thread):
+    def __init__(self, data, out, state):
+	threading.Thread.__init__(self)
+        self.state = state
+        self.data = data
+        self.out = out
+	if self.state == "STATE 0":
+	 tLock.acquire()
+	else
+	 tLock.release
+
+    def run(self):
+        f = open(self.out, "a")
+        f.write(self.data[1] + '\n') # Timestamp 
+        f.write('Pirani P1' + self.data[2] + 'mbar \n') # Pirani P1 (Pressure mbar)
+        f.write('Cold Cathod P2' + self.data[3] + 'mbar \n') # Cold Cathod P2 (Pressure mbar)
+        f.write('Pirani P3' + self.data[4] + 'mbar \n') # Pirani P3 (Pressure mbar)
+        f.write('HVGV status' + self.data[5] + '\n') # HVGV status (OPEN,CLOSED,OPENING,CLOSING)
+        f.write('VV status' + self.data[6] + '\n') # VV status (OPEN,CLOSED)
+        f.write('PP status' + self.data[7] + '\n') # PP status (ON,OFF)
+        f.write('TMP status' + self.data[8] + '\n') # TMP status (ON,OFF)
+        f.close()
+        time.sleep(1)
+        print("Finished Background file write to " + self.out)
+
+	fileinfo = os.stat(self.out)
+	SIZE = fileinfo.st_size # return the file size in bytes
+
+class CommandWrite(threading.Thread):
+    def __init__(self, data, out):
+        threading.Thread.__init__(self)
+	self.state = data[3]
+        self.data = data
+        self.out = out
+	if self.state == "STATE 0":
+	 tLock.acquire()
+	else
+	 tLock.release
+
+    def run(self):
+        f = open(self.out, "a")
+        f.write(self.data[1] + '\n') # Timestamp 
+        f.write('Command requested' + self.data[2] + 'mbar \n') # Pirani P1 (Pressure mbar)
+        f.write('Controller's current state' + self.data[3] + 'mbar \n') # Cold Cathod P2 (Pressure mbar)
+        f.close()
+        time.sleep(1)
+        print("Finished Background file write to " + self.out)
+
+	fileinfo = os.stat(self.out)
+	SIZE = fileinfo.st_size # return the file size in bytes
+
+
+
+def backup(theadName):
+    while 1 < 2: # To run forever
+    copyfile(src, dst) # copy and paste the file named src to dst
+    time.sleep(1) # Save backup of the data every 1 sec (frequency 1Hz)
+    print "%s" % 
+
+
+#--------------------------------------
+# SAFETY
+#--------------------------------------
+
+# Block unreasonable operation
+
+
+
+#--------------------------------------
+# MEMORY
+#--------------------------------------
+def details(threadName, dev):
+
+    fulldir = "/media/ravi/"+dev
+
+    disk = os.statvfs(fulldir)
+
+    print("")
+    print"Driver name " + Name[x]
+    print("")
+
+    totalBytes = float(disk.f_bsize*disk.f_blocks)
+    print "total space: %.2f GB" % (totalBytes/1024/1024/1024)
+
+    totalUsedSpace = float(disk.f_bsize*(disk.f_blocks-disk.f_bfree))
+    print "used space: %.2f GB" % (totalUsedSpace/1024/1024/1024)
+
+    totalAvailSpace = float(disk.f_bsize*disk.f_bfree)
+    print "available space: %.2f GB" % (totalAvailSpace/1024/1024/1024)
+
+    print("------------------------------")
+
+    time.sleep(5)
+
+Name = os.listdir("/media/ravi/")
+length = len(Name)
+print(Name[-1])
+
+for x in range(length):
+    details(str(Name[x]))
+
+
+
+#--------------------------------------
+# MAIN
+#--------------------------------------
+def Main():
+    thread_mode = threading.Thread(target=get_Mode, args=("Mode"))
+    thread_sensors = threading.Thread(target=get_Sensors, args=("Sensors"))
+    thread_backup = threading.Thread(target=, args=("Backup"))
+    thread_ = threading.Thread(target=, args=("Backup"))
+
+    thread_mode.start()
+    thread_sensors.start()
+    
+    print("Main complete")
+
+if __name__ == '__main__':
+    Main()
+
+
+#--------------------------------------
+# THREADING
+#--------------------------------------
+
+# Thread to write in a file
+
+//code 1//
+
+from threading import Thread
+import time
+
+def timer(name, delay, repeat):
+    print("Timer: " + name + " Started")
+    while repeat > 0:
+        time.sleep(delay)
+        print(name + ": " + str(time.ctime(time.time())))
+        repeat -= 1
+    print("Timer: " + name + " Completed")
+
+def Main():
+    t1 = Thread(target=timer, args=("Timer1", 1, 5))
+    t2 = Thread(target=timer, args=("Timer2", 2, 5))
+    t1.start()
+    t2.start()
+    
+    print("Main complete")
+
+if __name__ == '__main__':
+    Main()
+    
+
+
+
+//code 2//
+import threading
+import time
+
+class AsyncWrite(threading.Thread):
+    def __init__(self, text, out):
+        threading.Thread.__init__(self)
+        self.text = text
+        self.out = out
+
+    def run(self):
+        f = open(self.out, "a")
+        f.write(self.text + '\n')
+        f.close()
+        time.sleep(2)
+        print("Finished Background file write to " + self.out)
+        
+
+def Main():
+    message = input("Enter a string to store:" )
+    background = AsyncWrite(message, 'out.txt')
+    background.start()
+    print("The program can continue while it writes in another thread")
+    print("100 + 400 = ", 100+400)
+
+    background.join()
+    print("Waited until thread was complete")
+
+if __name__ == '__main__':
+    Main()
+    
+
+
+
+//code 3//
+import threading
+import time
+
+tLock = threading.Lock()
+
+def timer(name, delay, repeat):
+    print("Timer: " + name + " Started")
+    tLock.acquire()
+    print(name + " Has Acquired the lock")
+    while repeat > 0:
+        time.sleep(delay)
+        print(name + ": " + str(time.ctime(time.time())))
+        repeat -= 1
+    print(name + " is releasing the lock")
+    tLock.release()
+    print("Timer: " + name + " Completed")
+
+def Main():
+    t1 = threading.Thread(target=timer, args=("Timer1", 1, 5))
+    t2 = threading.Thread(target=timer, args=("Timer2", 2, 5))
+    t1.start()
+    t2.start()
+    
+    print("Main complete")
+
+if __name__ == '__main__':
+    Main()
+    

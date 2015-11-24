@@ -1,0 +1,23 @@
+#--------------------------------------
+# SENSORS - INPUTS
+#--------------------------------------
+
+#-+- IMPORT -+-
+
+# GPIO.input(channel) # Read the value on the input channel
+
+# Setup the channels
+def GPIOsetup_sensors():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(PIRANI_P1_PIN, GPIO.IN)
+    GPIO.setup(COLD_CATHOD_P2_PIN, GPIO.IN)
+    GPIO.setup(PIRANI_P3_PIN, GPIO.IN)
+    GPIO.setwarnings(False)
+
+def get_Sensors(threadName):
+    while 1 < 2: # To run forever
+    P1 = GPIO.input(PIRANI_P1_PIN)
+    P2 = GPIO.input(COLD_CATHOD_P2_PIN)
+    P3 = GPIO.input(PIRANI_P3_PIN)
+    time.sleep(1) # Get data every 1 sec frequency 1Hz
+    print "%s" % 

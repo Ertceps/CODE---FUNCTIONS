@@ -1,0 +1,4 @@
+Controller Connection Failure
+No connection acknowledgment
+Verify connection
+Critical

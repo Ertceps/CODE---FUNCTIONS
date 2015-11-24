@@ -1,0 +1,45 @@
+#--------------------------------------
+# STATE 0
+#--------------------------------------
+
+#import
+import RPi.GPIO as GPIO # to control GPIO
+import time # to get the time - ba we c pas complique
+from threading import thread
+import threading # to do multi-tasking actions
+import os # to get file size
+import logging # to create a logger file
+import sys
+import LCD_DISPLAY
+import STATE_1
+import STATE_2
+import STATE_3
+import STATE_4
+
+
+def STATE_0():
+    print "STATE 0 : VENTED CHAMBER\n"
+
+    # Display  LCD : STATE 0
+    LCD_DISPLAY.main("STATE 0")
+        
+    # Update command log
+    COMMAND = "STATE 0"
+
+    # Stop Data acquisition
+
+    while COMMAND == "STATE 0":
+        while : # Receive command
+            get_Mode() # !!!!!!!! Create this function
+            if COMMAND == "STATE 1":
+                STATE_1.STATE_1()
+            elif MODE == "LOCAL":
+                # Send error 5521 to chamber control
+
+                # Exit Remote sequence
+
+            else :
+
+            #Return USB message : Invalid command
+
+            # Error log

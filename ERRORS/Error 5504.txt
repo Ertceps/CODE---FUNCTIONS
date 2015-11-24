@@ -1,0 +1,4 @@
+TMP Failure
+Pressure stable at approx. 10^(-1) mbar
+Check power and TRIAC / Relays
+Critical
