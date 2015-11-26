@@ -73,21 +73,21 @@ def error_1():
 
 
 def error_2():
-    global command, error
-    global P1, P2, P3
-    global VV
+    # global command, error
+    # global p1, p2, p3
+    # global vv
     if command == "STATE 1":  # Establish vacuum ?
-        p1_0 = P1
-        p2_0 = P2
+        p1_0 = p1
+        p2_0 = p2
         time.sleep(1)
-        p1_1 = P1
-        p2_1 = P2
+        p1_1 = p1
+        p2_1 = p2
         if (p1_1 < p1_0) and (p2_1 < p2_0):  # Pressure decreasing ?
             error = "OK"
             READ_ERROR_TXT.read_error_txt(error)
         else:
-            p1_3 = P1
-            p2_3 = P2
+            p1_3 = p1
+            p2_3 = p2
             if p1_3 <= ....................
                 if p1_3 < 10^(-5) and p2_3 < 10^(-5):
                     error = "OK"
@@ -112,14 +112,14 @@ def error_2():
                 error = "Error 5510"
                 READ_ERROR_TXT.read_error_txt(error)
     elif command == "STATE 3":  # Vent the chamber ?
-        p1_0 = P1
-        p2_0 = P2
+        p1_0 = p1
+        p2_0 = p2
         time.sleep(1)
-        p1_1 = P1
-        p2_1 = P2
+        p1_1 = p1
+        p2_1 = p2
         if (p1_1 > p1_0) and (p2_1 > p2_0):  # Check if Pressure rising ?
             error = "OK"
-        elif VV == 1:  # Check if VV open ?
+        elif vv == 1:  # Check if vv open ?
             error = "Error 5507"
             READ_ERROR_TXT.read_error_txt(error)
         else:

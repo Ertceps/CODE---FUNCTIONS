@@ -12,47 +12,44 @@ import ACTIONS
 import TCPCommunicatorClient
 import DATA_ACQUISITION_BACKUP
 
+class State2(object):
+    def state_2(self):
+        global command, state
+        global p1, p2, p3
+        global hvgv
+        print "STATE 2 : MAINTAIN VACUUM\n"
 
-def state_2():
-    global command, state
-    global P1, P2, P3
-    global HVGV
-    print "STATE 2 : MAINTAIN VACUUM\n"
+        LCD_DISPLAY.main("STATE 2")  # Display LCD : STATE 2
 
-    LCD_DISPLAY.main("STATE 2")  # Display LCD : STATE 2
+        while :
+            # Update command log
+            state = "STATE 2"
 
-    while :
-        # Update command log
-        state = "STATE 2"
+            while command == "":  # Command received ?
 
-        while command == "":# Command received ?
-
-            # Error log
-            if HVGV == 1:
-                if P3 < 5*10^(-2):
-                    if P2 < 10^(-5):
-                    # Received USB command
-                    else:
-                        # Display Warning
-                        if P2 < 10^(-2):
+                # Error log
+                if hvgv == 1:
+                    if p3 < 5*10^(-2):
+                        if p2 < 10^(-5):
+                        # Received USB command
                         else:
-                            # Error Log
+                            # Display Warning
+                            if p2 < 10^(-2):
+                            else:
+                                # Error Log
 
 
-                            STATE_4.state_4()
+                                STATE_4.state_4()
+                    else :
+                     # Error log
+
+                     STATE_4.state_4()
                 else :
-                 # Error log
+                # Error log
 
-                 STATE_4.state_4()
+                    STATE_4.state_4()
+            if state == "STATE 3":
+                STATE_3.state_3()
             else :
-            # Error log
-
-                STATE_4.state_4()
-        if state == "STATE 3":
-            STATE_3.state_3()
-        else :
-            WAIT_ROUTINE.wait_routine(state)
-            # Return USB message : Invalid command
-
-
-
+                WAIT_ROUTINE.wait_routine(state)
+                # Return USB message : Invalid command

@@ -1,0 +1,4 @@
+VV Failure
+Signal sent but no signal sent from TRIAC
+Check power and TRIAC/Relays
+Critical

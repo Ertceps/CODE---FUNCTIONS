@@ -45,7 +45,7 @@ def run(self):
     SIZE_physical = file_info.st_size  # return the file size in bytes
 
 
-# Write the commands in a log file
+# Write the Commands in a log file
 class CommandWrite(threading.Thread):
     def __init__(self, data, out):
         threading.Thread.__init__(self)
@@ -61,8 +61,8 @@ class CommandWrite(threading.Thread):
         global SIZE_command
         f = open(self.out, "a")
         f.write(self.data[1] + '\n')  # Timestamp
-        f.write('Command requested' + self.data[2] + 'mbar \n')  # Command
-        f.write('Controllers current state' + self.data[3] + 'mbar \n\n')  # State
+        f.write('Command requested' + self.data[2] + '\n')  # Command
+        f.write('Controllers current state' + self.data[3] + '\n') # State
         f.close()
         time.sleep(1)
         print("Finished Background file write to " + self.out)
@@ -84,7 +84,8 @@ def copy_files_to(srcdir, dstdir):
 
 
 def copy_files(dstdir):
-    copy_files_to(GOOGLE_DRIVE_DIRECTORY, dstdir)
+    directory = "/media/pi/KINGSTON/VACUUM_CONTROLLER/LOG"
+    copy_files_to(directory, dstdir)
 
 
 def backup(thread_name):

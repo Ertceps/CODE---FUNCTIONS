@@ -1,0 +1,4 @@
+Devices OFF
+No signal received after fuses or power supplies OFF
+Verify fuses and power supplies
+Critical

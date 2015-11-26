@@ -9,9 +9,7 @@ import LOCAL
 
 
 def wait_routine(state):
-    global command
     global mode
-
     if state != "STATE 3":
         error = "Error 5502"  # Send error 5521 to chamber control
         READ_ERROR_TXT.read_error_txt(error)

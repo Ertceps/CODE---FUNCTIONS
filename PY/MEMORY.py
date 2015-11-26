@@ -9,12 +9,12 @@ import os
 
 def details(dev):
     global free_memory
-    fulldir = "/media/ravi/"+dev
+    fulldir = "/media/pi/KINGSTON/VACUUM_CONTROLLER"+dev
 
     disk = os.statvfs(fulldir)
 
     print("")
-    print"Driver name " + Name[x]
+    print"Driver name " + fulldir
     print("")
 
     total_bytes = float(disk.f_bsize*disk.f_blocks)
@@ -31,10 +31,3 @@ def details(dev):
     print("------------------------------")
 
     time.sleep(5)
-
-Name = os.listdir("/media/ravi/")
-length = len(Name)
-print(Name[-1])
-
-for x in range(length):
-    details(str(Name[x]))

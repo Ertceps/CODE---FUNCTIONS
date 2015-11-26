@@ -1,0 +1,4 @@
+Sensor out of range
+Signal from sensor stable at 0 or 10V
+Pump down the chamber
+Information

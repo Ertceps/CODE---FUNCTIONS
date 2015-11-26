@@ -1,0 +1,4 @@
+Remote Automatic Active
+Operator trying to input commands on GUI when controlled by master program
+Sever connection with master program
+Information

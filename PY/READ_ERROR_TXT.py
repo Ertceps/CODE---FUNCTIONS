@@ -25,8 +25,10 @@ def error_log(contents):
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
 
+    message = contents]
+
     # create formatter
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s') # Timestamp/Error Code/Error information/Importance
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %s', datefmt='%m/%d/%Y %I:%M:%S %p', message) # Timestamp/Error Code/Error information/Importance
 
     # add formatter to ch
     ch.setFormatter(formatter)

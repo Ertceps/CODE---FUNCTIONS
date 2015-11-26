@@ -6,37 +6,41 @@
 import time
 import RPi.GPIO as GPIO
 import smbus
+import threading
+import spidev
 
 __all__ = ['ADS1118']
 
 def gpio_setup_sensors():
-    global PIRANI_P1_PIN, COLD_CATHOD_P2_PIN, PIRANI_P3_PIN
+    global pirani_p1_pin, cold_cathod_p2_pin, pirani_p3_pin, spiclk, spimiso, spimosi, spics
+    
     # Sensors ADC Channels
-    PIRANI_P1_PIN = 0  # Pirani 1 connected to adc #0
-    COLD_CATHOD_P2_PIN = 1  # Cold cathod connected to adc #1
-    PIRANI_P3_PIN = 2  # Pirani 2 connected to adc #2
+    pirani_p1_pin = 0  # Pirani 1 connected to adc #0
+    cold_cathod_p2_pin = 1  # Cold cathod connected to adc #1
+    pirani_p3_pin = 2  # Pirani 2 connected to adc #2
 
-    # change these as desired - they're the pins connected from the
-    # SPI port on the ADC to the Cobbler
-    SPICLK = 11  # Rpi.GPIO pin - Serial Clock (output from master) - Real pin #23 Rpi
-    SPIMISO = 9  # Master Input, Slave Output (output from slave) - Real pin #21 Rpi
-    SPIMOSI = 10  # Master Output, Slave Input (output from master) - Real pin #19 Rpi
-    SPICS = 7  # Chip Select - Real pin #26 Rpi
+    # change these as desired - they're the pins connected from the SPI port on the ADC to the Cobbler
+    spiclk = 11  # Rpi.GPIO pin - Serial Clock (output from master) - Real pin #23 Rpi
+    spimiso = 9  # Master Input, Slave Output (output from slave) - Real pin #21 Rpi
+    spimosi = 10  # Master Output, Slave Input (output from master) - Real pin #19 Rpi
+    spics = 7  # Chip Select - Real pin #26 Rpi
 
     # set up the SPI interface pins
-    GPIO.setup(SPIMOSI, GPIO.OUT)
-    GPIO.setup(SPIMISO, GPIO.IN)
-    GPIO.setup(SPICLK, GPIO.OUT)
-    GPIO.setup(SPICS, GPIO.OUT)
-
     GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    
+    GPIO.setup(spimosi, GPIO.OUT)
+    GPIO.setup(spimiso, GPIO.IN)
+    GPIO.setup(spiclk, GPIO.OUT)
+    GPIO.setup(spics, GPIO.OUT)
+
     DEBUG = 1
+    print("Sensors pins setup")
 
 # ===========================================================================
 # ADS1118 Class
 # ===========================================================================
 class ADS1118:
-    i2c = None
 
     # IC Identifiers
     __IC_ADS1118 = 0x01
@@ -130,7 +134,8 @@ class ADS1118:
     # Constructor
     def __init__(self, address=0x48, ic=__IC_ADS1118, debug=False):
         try:
-            self.i2c = smbus.SMBus(1)
+            self.spi = spidev.SpiDev()
+            spi.open(0,0)
         except:
             raise IOError("Could not find i2c device")
 
@@ -202,7 +207,6 @@ def readadc(self, channel, clockpin, mosipin, misopin, cspin, pga=6144, sps=250)
             return ( (result[0] << 8) | (result[1]) )*pga/32768.0
 
         # GPIO.output(cspin, True)
-
         # GPIO.output(clockpin, False)  # start clock low
         # GPIO.output(cspin, False)     # bring CS low
         #
@@ -232,21 +236,33 @@ def readadc(self, channel, clockpin, mosipin, misopin, cspin, pga=6144, sps=250)
         # adcout >>= 1       # first bit is 'null' so drop it
         # return adcout
 
-
 # Get the value of the sensors
-def get_sensors():
-    while 1 < 2:  # To run forever
-        global P1, P2, P3, timestamp_sensors, SPICLK, SPIMISO, SPIMOSI, SPICS, PIRANI_P1_PIN, COLD_CATHOD_P2_PIN, PIRANI_P3_PIN
+class ThreadSensors (threading.Thread):
+    
+    def __init__(self, threadID, name, counter):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.counter = counter
+        
+    def run(self):
+        
+        print "Starting " + self.name
+        print "%s: %s" % (self.name, time.ctime(time.time()))
+        print "Exiting " + self.name
+        
+        while 1 < 2:  # To run forever
+            global sensors, timestamp_sensors, spiclk, spimiso, spimosi, spics, pirani_p1_pin, cold_cathod_p2_pin, pirani_p3_pin
 
-        p1 = readadc(PIRANI_P1_PIN, SPICLK, SPIMISO, SPIMOSI, SPICS)
-        P1 = p1 / 65.536
-        print 'P1 = {p1}%' .format(p1=P1)
-        p2 = readadc(COLD_CATHOD_P2_PIN, SPICLK, SPIMISO, SPIMOSI, SPICS)
-        P2 = p2 / 65.536
-        print 'P2 = {p2}%' .format(p2=P2)
-        p3 = readadc(PIRANI_P3_PIN, SPICLK, SPIMISO, SPIMOSI, SPICS)
-        P3 = p3 / 65.536
-        print 'P3 = {p3}%' .format(p3=P3)
-        timestamp_sensors = time.time()
-        time.sleep(1)  # Get data every 1 sec frequency 1Hz
-        print "%s"
+            p1 = readadc(self, pirani_p1_pin, spiclk, spimiso, spimosi, spics)
+            sensors[1] = p1 / 65.536
+            print 'P1 = {p1}%' .format(p1=P1)
+            p2 = readadc(self, cold_cathod_p2_pin, spiclk, spimiso, spimosi, spics)
+            sensors[2] = p2 / 65.536
+            print 'P2 = {p2}%' .format(p2=P2)
+            p3 = readadc(self, pirani_p3_pin, spiclk, spimiso, spimosi, spics)
+            sensors[3] = p3 / 65.536
+            print 'P3 = {p3}%' .format(p3=P3)
+            timestamp_sensors = time.time()
+            time.sleep(1)  # Get data every 1 sec frequency 1Hz
+            print "%s"

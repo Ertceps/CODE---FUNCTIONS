@@ -11,8 +11,8 @@ import READ_ERROR_TXT
 
 
 def state_4():
-    global command, state, mode
-    global HVGV
+    # global command, state, mode
+    # global HVGV
 
     print "STATE 4 : SAFE STATE\n"
 

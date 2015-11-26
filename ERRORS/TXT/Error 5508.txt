@@ -1,0 +1,4 @@
+Sensor Failure
+No signal from sensors
+Check power to TPG 300
+Critical

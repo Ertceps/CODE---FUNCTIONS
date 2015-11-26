@@ -17,10 +17,7 @@ class Transmit(threading.Thread):
         # Sending data to the server
         # print('Transmit started')
         global s  # connection
-        global P1, P2, P3, timestamp_sensors
-        global PP, TMP, TMP_FV, HVGV, VV
-        global data
-        data = [timestamp_sensors, P1, P2, P3, HVGV, VV, PP, TMP, TMP_FV]
+        data = [timestamp_sensors, sensors[1], sensors[2], sensors[3], hvgv, vv, pp, tmp]
         global threadRunning
         while threadRunning:
             # Read text with 0.5 sec timeout
@@ -40,7 +37,6 @@ class Receive(threading.Thread):
 		# print('Receive started')
         global s  # connection
         global threadRunning
-        global command
         while threadRunning:
             # Use 1 second timeout on receive
             ready = select.select([s], [], [], 1)
@@ -58,42 +54,47 @@ class Receive(threading.Thread):
         # print('Receive stopped - threadRunning')
         return
 
-
-def main():
-    # Running main program
-    host = '192.168.137.1'  # The remote host - windows machine running the LabVIEW Server
-    port = 6852  # The same port as used by the server - defined in LabVIEW
-    global threadRunning  # Used to stop threads
-    global receive
-    global transmit
-    threadRunning = False
-    global s
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((host, port))
-
-    os.system('clear')
-    print('Connection with server established')
-
-    try:
-        print(34 * '-')
-        print("        M A I N - M E N U")
-        print(' Press CTRL+C to close connection')
-        print(34 * '-')
-        # Create instance of class
-        threadRunning = True
-        transmit = Transmit()
-        receive = Receive()
-        # Start class
-        transmit.start()
-        receive.start()
-        while threadRunning:
-            sleep(0.1)
-
-    except KeyboardInterrupt:  # Stop program when CTRL+C is pressed
-        # print('Main stopped')
+class ThreadTCP_IP(threading.Thread):
+    def __init__(self, threadID, name, counter):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.counter = counter    
+    def run(self):
+        # Running main program
+        host = '192.168.137.1'  # The remote host - windows machine running the LabVIEW Server
+        port = 6852  # The same port as used by the server - defined in LabVIEW
+        global threadRunning  # Used to stop threads
+        global receive
+        global transmit
         threadRunning = False
-        sleep(2)
-        s.close()
+        global s
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((host, port))
 
-    finally:
-        s.close()
+        os.system('clear')
+        print('Connection with server established')
+
+        try:
+            print(34 * '-')
+            print("        M A I N - M E N U")
+            print(' Press CTRL+C to close connection')
+            print(34 * '-')
+            # Create instance of class
+            threadRunning = True
+            transmit = Transmit()
+            receive = Receive()
+            # Start class
+            transmit.start()
+            receive.start()
+            while threadRunning:
+                sleep(0.1)
+
+        except KeyboardInterrupt:  # Stop program when CTRL+C is pressed
+            # print('Main stopped')
+            threadRunning = False
+            sleep(2)
+            s.close()
+
+        finally:
+            s.close()
